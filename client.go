@@ -2,7 +2,6 @@
 package ncdeck
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,12 +11,10 @@ import (
 )
 
 type Client struct {
-	BaseURL   string
-	username  string
-	password  string
-	Client    *http.Client
-	debugMode bool
-	ctx       context.Context
+	BaseURL  string
+	username string
+	password string
+	Client   *http.Client
 }
 
 // Create new Nextcloud Deck Client
