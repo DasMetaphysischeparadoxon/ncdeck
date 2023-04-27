@@ -68,7 +68,7 @@ For more examples please look into the test file ```cmd/test_client/main.go```.
 
 ## Documentation
 
-Please use ```go doc``` be like:
+Please use ```go doc``` like:
 
 ```bash
 go doc ncdeck.client
