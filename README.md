@@ -2,9 +2,15 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/DasMetaphysischeparadoxon/ncdeck)](https://goreportcard.com/report/github.com/DasMetaphysischeparadoxon/ncdeck)
 
-A Go package to interact with [Nextcloud Deck REST API](https://deck.readthedocs.io/en/latest/API/).
+A Go package to interact with [Nextcloud Deck REST API](https://deck.readthedocs.io/en/latest/API/) for Nextcloud [Deck](https://github.com/nextcloud/deck) 
 
 > this project is still in progress, please use with caution!
+
+## Installation
+
+```bash
+go get github.com/DasMetaphysischeparadoxon/ncdeck
+```
 
 ## Example
 
@@ -50,9 +56,7 @@ func main() {
 	}
 
 	fmt.Println("[*] update card")
-
 	card.Title = "New Title"
-
 	err = card.Update()
 	if err != nil {
 		fmt.Println("Can't update card:", err)
@@ -60,11 +64,11 @@ func main() {
 }
 ```
 
-For more examples please look into the test file *cmd/test_client*.
+For more examples please look into the test file ```cmd/test_client/main.go```.
 
 ## Documentation
 
-Please use go doc tool like:
+Please use ```go doc``` be like:
 
 ```bash
 go doc ncdeck.client
