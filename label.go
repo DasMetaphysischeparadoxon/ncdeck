@@ -42,13 +42,13 @@ func (l *Label) Update() error {
 
 	url := l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
 
-	var reqBody = []byte(fmt.Sprintf(`{"title": "%v", "color": "%v"}`, l.Title, l.Color))
+	var reqBody = fmt.Sprintf(`{"title": "%v", "color": "%v"}`, l.Title, l.Color)
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	return l.client.do(req, &l)
 }

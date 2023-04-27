@@ -50,14 +50,14 @@ func (b Board) CreateCard(stackid int, title, description string, order int, due
 func (b Board) CreateLabel(title, color string) (Label, error) {
 
 	url := b.client.BaseURL + fmt.Sprintf("/boards/%v/labels", b.ID)
-	var reqBody = []byte(fmt.Sprintf(`{"title": "%v", "color": "%v"}`, title, color))
+	var reqBody = fmt.Sprintf(`{"title": "%v", "color": "%v"}`, title, color)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return Label{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	var label Label
 	err = b.client.do(req, &label)
@@ -76,14 +76,14 @@ func (b Board) CreateLabel(title, color string) (Label, error) {
 func (b Board) CreateStack(title string, order int) (Stack, error) {
 
 	url := b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks", b.ID)
-	var reqBody = []byte(fmt.Sprintf(`{"title":"%v", "order": "%v"}`, title, order))
+	var reqBody = fmt.Sprintf(`{"title":"%v", "order": "%v"}`, title, order)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return Stack{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	var stack Stack
 	err = b.client.do(req, &stack)
@@ -184,14 +184,14 @@ func (b *Board) UndoDelete() error {
 func (b *Board) Update() error {
 
 	url := fmt.Sprintf("%v/boards/%v", b.client.BaseURL, b.ID)
-	var reqBody = []byte(fmt.Sprintf(`{"title":"%v","color": "%v","archived": %v}`, b.Title, b.Color, b.Archived))
+	var reqBody = fmt.Sprintf(`{"title":"%v","color": "%v","archived": %v}`, b.Title, b.Color, b.Archived)
 
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	return b.client.do(req, &b)
 }

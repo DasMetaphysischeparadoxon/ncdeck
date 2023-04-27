@@ -25,14 +25,14 @@ func (s Stack) CreateCard(title, description string, order int, duedate string) 
 
 	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards", s.BoardID, s.ID)
 
-	var reqBody = []byte(fmt.Sprintf(`{"title":"%v", "type": "plain", "order": %v, "description": %#v}`, title, order, description))
+	var reqBody = fmt.Sprintf(`{"title":"%v", "type": "plain", "order": %v, "description": %#v}`, title, order, description)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return Card{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	var card Card
 	card.client = s.client
@@ -49,14 +49,14 @@ func (s Stack) CreateCard(title, description string, order int, duedate string) 
 func (s *Stack) Update() error {
 
 	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
-	var reqBody = []byte(fmt.Sprintf(`{"title":"%v", "order": "%v"}`, s.Title, s.Order))
+	var reqBody = fmt.Sprintf(`{"title":"%v", "order": "%v"}`, s.Title, s.Order)
 
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	return s.client.do(req, &s)
 }

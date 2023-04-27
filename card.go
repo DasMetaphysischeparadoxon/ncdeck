@@ -56,13 +56,13 @@ func (c *Card) Update() error {
 		c.Duedate = "null"
 	}
 
-	var reqBody = []byte(fmt.Sprintf(`{"title":"%v","description":%#v,"type":"plain","order":%v,"duedate":%v,"owner":%#v}`, c.Title, c.Description, c.Order, c.Duedate, c.Owner))
+	var reqBody = fmt.Sprintf(`{"title":"%v","description":%#v,"type":"plain","order":%v,"duedate":%v,"owner":%#v}`, c.Title, c.Description, c.Order, c.Duedate, c.Owner)
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(string(reqBody)))
+	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
 
 	return c.client.do(req, &c)
 }
