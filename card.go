@@ -2,7 +2,7 @@ package ncdeck
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -36,7 +36,7 @@ type Card struct {
 // useful if this card was updated by UI
 func (c *Card) Get() error {
 
-	url := c.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards/%v", c.boardID, c.StackID, c.ID)
+	var url = c.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards/%v", c.boardID, c.StackID, c.ID)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -49,7 +49,7 @@ func (c *Card) Get() error {
 // Update informations about this card
 func (c *Card) Update() error {
 
-	url := c.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards/%v", c.boardID, c.StackID, c.ID)
+	var url = c.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards/%v", c.boardID, c.StackID, c.ID)
 
 	if c.Duedate == "" {
 		// If duedate is empty, the update will failed
@@ -62,7 +62,7 @@ func (c *Card) Update() error {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	return c.client.do(req, &c)
 }
@@ -70,7 +70,7 @@ func (c *Card) Update() error {
 // Delete this card
 func (c *Card) Delete() error {
 
-	url := c.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards/%v", c.boardID, c.StackID, c.ID)
+	var url = c.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards/%v", c.boardID, c.StackID, c.ID)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {

@@ -2,7 +2,7 @@ package ncdeck
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -23,7 +23,7 @@ type Label struct {
 // Get labels from board
 func (l *Label) Get() error {
 
-	url := l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
+	var url = l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
@@ -40,15 +40,18 @@ func (l *Label) Get() error {
 // Update label informations
 func (l *Label) Update() error {
 
-	url := l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
+	var (
+		url = l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
 
-	var reqBody = fmt.Sprintf(`{"title": "%v", "color": "%v"}`, l.Title, l.Color)
+		reqBody = fmt.Sprintf(`{"title": "%v", "color": "%v"}`, l.Title, l.Color)
+	)
+
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	return l.client.do(req, &l)
 }
@@ -56,7 +59,7 @@ func (l *Label) Update() error {
 // Delete a label
 func (l *Label) Delete() error {
 
-	url := l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
+	var url = l.client.BaseURL + fmt.Sprintf("/boards/%v/labels/%v", l.BoardID, l.ID)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {

@@ -2,7 +2,7 @@ package ncdeck
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -49,15 +49,17 @@ func (b Board) CreateCard(stackid int, title, description string, order int, due
 // Create a label
 func (b Board) CreateLabel(title, color string) (Label, error) {
 
-	url := b.client.BaseURL + fmt.Sprintf("/boards/%v/labels", b.ID)
-	var reqBody = fmt.Sprintf(`{"title": "%v", "color": "%v"}`, title, color)
+	var (
+		url     = b.client.BaseURL + fmt.Sprintf("/boards/%v/labels", b.ID)
+		reqBody = fmt.Sprintf(`{"title": "%v", "color": "%v"}`, title, color)
+	)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return Label{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	var label Label
 	err = b.client.do(req, &label)
@@ -75,15 +77,17 @@ func (b Board) CreateLabel(title, color string) (Label, error) {
 // Create a Stack
 func (b Board) CreateStack(title string, order int) (Stack, error) {
 
-	url := b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks", b.ID)
-	var reqBody = fmt.Sprintf(`{"title":"%v", "order": "%v"}`, title, order)
+	var (
+		url     = b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks", b.ID)
+		reqBody = fmt.Sprintf(`{"title":"%v", "order": "%v"}`, title, order)
+	)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return Stack{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	var stack Stack
 	err = b.client.do(req, &stack)
@@ -101,7 +105,7 @@ func (b Board) CreateStack(title string, order int) (Stack, error) {
 // Get all stacks of this board
 func (b *Board) GetStacks() (Stacks, error) {
 
-	url := b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks", b.ID)
+	var url = b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks", b.ID)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return Stacks{}, err
@@ -122,7 +126,7 @@ func (b *Board) GetStacks() (Stacks, error) {
 // Get archived stacks
 func (b *Board) GetStacksArchived() error {
 
-	url := b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/archived", b.ID)
+	var url = b.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/archived", b.ID)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
@@ -157,7 +161,7 @@ func (b *Board) Get() error {
 // Delete this board
 func (b *Board) Delete() error {
 
-	url := fmt.Sprintf("%v/boards/%v", b.client.BaseURL, b.ID)
+	var url = fmt.Sprintf("%v/boards/%v", b.client.BaseURL, b.ID)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -170,7 +174,7 @@ func (b *Board) Delete() error {
 // Undo board deletion
 func (b *Board) UndoDelete() error {
 
-	url := fmt.Sprintf("%v/boards/%v/undo_delete", b.client.BaseURL, b.ID)
+	var url = fmt.Sprintf("%v/boards/%v/undo_delete", b.client.BaseURL, b.ID)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
@@ -183,15 +187,17 @@ func (b *Board) UndoDelete() error {
 // Update informations about this board
 func (b *Board) Update() error {
 
-	url := fmt.Sprintf("%v/boards/%v", b.client.BaseURL, b.ID)
-	var reqBody = fmt.Sprintf(`{"title":"%v","color": "%v","archived": %v}`, b.Title, b.Color, b.Archived)
+	var (
+		url     = fmt.Sprintf("%v/boards/%v", b.client.BaseURL, b.ID)
+		reqBody = fmt.Sprintf(`{"title":"%v","color": "%v","archived": %v}`, b.Title, b.Color, b.Archived)
+	)
 
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	return b.client.do(req, &b)
 }

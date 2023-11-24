@@ -2,7 +2,7 @@ package ncdeck
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -23,16 +23,17 @@ type Stack struct {
 // Create card on this stack
 func (s Stack) CreateCard(title, description string, order int, duedate string) (Card, error) {
 
-	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards", s.BoardID, s.ID)
-
-	var reqBody = fmt.Sprintf(`{"title":"%v", "type": "plain", "order": %v, "description": %#v}`, title, order, description)
+	var (
+		url     = s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v/cards", s.BoardID, s.ID)
+		reqBody = fmt.Sprintf(`{"title":"%v", "type": "plain", "order": %v, "description": %#v}`, title, order, description)
+	)
 
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return Card{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	var card Card
 	card.client = s.client
@@ -48,15 +49,17 @@ func (s Stack) CreateCard(title, description string, order int, duedate string) 
 // Update stacks informations
 func (s *Stack) Update() error {
 
-	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
-	var reqBody = fmt.Sprintf(`{"title":"%v", "order": "%v"}`, s.Title, s.Order)
+	var (
+		url     = s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
+		reqBody = fmt.Sprintf(`{"title":"%v", "order": "%v"}`, s.Title, s.Order)
+	)
 
 	req, err := http.NewRequest("PUT", url, nil)
 	if err != nil {
 		return err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(reqBody))
+	req.Body = io.NopCloser(strings.NewReader(reqBody))
 
 	return s.client.do(req, &s)
 }
@@ -64,7 +67,7 @@ func (s *Stack) Update() error {
 // Get all cards from this stack
 func (s *Stack) GetCards() (Cards, error) {
 
-	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
+	var url = s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -83,7 +86,7 @@ func (s *Stack) GetCards() (Cards, error) {
 // useful if stack was updated via UI
 func (s *Stack) Get() error {
 
-	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
+	var url = s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -96,7 +99,7 @@ func (s *Stack) Get() error {
 // Delete this stack
 func (s *Stack) Delete() error {
 
-	url := s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
+	var url = s.client.BaseURL + fmt.Sprintf("/boards/%v/stacks/%v", s.BoardID, s.ID)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {

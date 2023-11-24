@@ -4,7 +4,7 @@ package ncdeck
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -29,7 +29,6 @@ func NewClient(username, password, baseURL string) *Client {
 
 // Execute HTTP requests
 func (c Client) do(req *http.Request, obj interface{}) error {
-
 	req.Header.Add("OCS-APIRequest", "true")
 	req.Header.Add("Content-Type", "application/json")
 	req.SetBasicAuth(c.username, c.password)
@@ -44,7 +43,7 @@ func (c Client) do(req *http.Request, obj interface{}) error {
 		return fmt.Errorf("status code: %d\nbody: %v", res.StatusCode, res.Body)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
@@ -56,7 +55,6 @@ func (c Client) do(req *http.Request, obj interface{}) error {
 
 // Get Stacks of Board ID
 func (c Client) GetStacks(boardid, stackid int) (Stacks, error) {
-
 	board := Board{ID: boardid}
 	board.Stacks = append(board.Stacks, Stack{ID: stackid, BoardID: boardid, client: &c})
 
@@ -65,7 +63,6 @@ func (c Client) GetStacks(boardid, stackid int) (Stacks, error) {
 
 // Get cards from a stack
 func (c Client) GetCards(boardid, stackid int) (Cards, error) {
-
 	board := Board{ID: boardid}
 	board.Stacks = append(board.Stacks, Stack{ID: stackid, BoardID: boardid, client: &c})
 
@@ -74,7 +71,6 @@ func (c Client) GetCards(boardid, stackid int) (Cards, error) {
 
 // Create card on specific board and stack
 func (c Client) CreateCard(boardid, stackid int, title, description string, order int, duedate string) (Card, error) {
-
 	board := Board{ID: boardid}
 	board.Stacks = append(board.Stacks, Stack{ID: stackid, BoardID: boardid, client: &c})
 
@@ -88,8 +84,7 @@ func (c Client) CreateCard(boardid, stackid int, title, description string, orde
 
 // Create a new board
 func (c Client) CreateBoard(title, color string) (Board, error) {
-
-	url := c.BaseURL + "/boards"
+	var url = c.BaseURL + "/boards"
 	body := fmt.Sprintf(`{"title":"%v", "color": "%v"}`, title, color)
 
 	req, err := http.NewRequest("POST", url, nil)
@@ -97,7 +92,7 @@ func (c Client) CreateBoard(title, color string) (Board, error) {
 		return Board{}, err
 	}
 
-	req.Body = ioutil.NopCloser(strings.NewReader(body))
+	req.Body = io.NopCloser(strings.NewReader(body))
 
 	var board Board
 
@@ -113,8 +108,7 @@ func (c Client) CreateBoard(title, color string) (Board, error) {
 
 // Get all boards
 func (c Client) GetBoards() (Boards, error) {
-
-	url := c.BaseURL + "/boards"
+	var url = c.BaseURL + "/boards"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return Boards{}, err
@@ -136,8 +130,7 @@ func (c Client) GetBoards() (Boards, error) {
 
 // Get board by id
 func (c Client) GetBoard(boardid int) (Board, error) {
-
-	url := c.BaseURL + fmt.Sprintf("/boards/%v", boardid)
+	var url = c.BaseURL + fmt.Sprintf("/boards/%v", boardid)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
